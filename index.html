@@ -89,6 +89,13 @@ rand = function(n){
 	return Math.floor(Math.random()*n);
 };
 
+function clickWait() {
+	document.body.onclick = function(){
+		init();
+		document.body.setAttribute("onclick", null);
+	}
+}
+
 function init() {
     var module = new Modplayer();
     module.setrepeat(true);
@@ -294,10 +301,10 @@ var words = [
 
   </script>
  </head>
- <body onload="init()">
+ <body onload="clickWait()">
  	<div class="aligncenter">
    		<canvas id="canvas" width="800" height="600"></canvas>
-   		<div id="message">titanics cruncher tecrunches while loating...</div>
+   		<div id="message">click to start...</div>
 		<!--<div id="flyer"><img src="impulse.png"></div>-->
    	</div>
  </body>
