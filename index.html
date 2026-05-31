@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ 	<title>Impulse - 11 July 2026</title>
+ 	<meta charset='utf-8'>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<style>
+	
+	* {
+		margin: 0px;
+		padding: 0px;
+		overflow: hidden;
+	}
+
+ 	@font-face {
+		font-family: 'Jersey';
+		src: url('Jersey10-Regular.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	}
+
+	body {
+		background: black;
+	}
+	
+ 	.aligncenter {
+ 		position: absolute;
+ 		top: 0px;
+ 		width: 100%;
+ 		text-align: center;
+ 		margin: auto;
+ 	}
+	
+	#message {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		font-family: 'Jersey', cursive;
+		color: white;
+		width: 100%;
+		height: 100%;
+		margin: auto;
+		text-align: center;
+		font-size: 2em;
+		overflow-y: hidden;
+		text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+		/*text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;*/
+		line-height: 2em;
+		z-index: 21;
+	}
+	
+	#message .letters {
+		position: relative;
+		top: 70%;
+		font-size:2em;
+		display: inline-block;
+		overflow: hidden;
+	}
+
+	#flyer {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		height: fit-content;
+		width: auto;
+	}
+
+	.letter {
+	  transform-origin: 50% 100%;
+	  display: inline-block;
+	  line-height: 1em;
+		padding:2px;
+	}
+
+ 	</style>
+	<script src="requestanimationframe.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/player.js"></script>
+    <script type="text/javascript" src="js/pt.js"></script>
+    <script type="text/javascript" src="js/st3.js"></script>
+    <script type="text/javascript" src="js/ft2.js"></script>
+    <!--<script type="text/javascript" src="js/ui.js"></script>-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+
+  	<script type="application/javascript">
+
+rand = function(n){
+	return Math.floor(Math.random()*n);
+};
+
+function init() {
+    var module = new Modplayer();
+    module.setrepeat(true);
+	module.setautostart(true);
+	module.setamigamodel("500");
+	module.setseparation(1);
+
+	module.onPlay=function() {
+		console.log('yo play bitch');
+  };
+
+  module.onStop=function() {
+    	console.log('stop that shit');
+  	};
+
+	var loadInterval=setInterval(function(){
+	  if (!module.delayload) {
+	     module.load('catching bubbles.xm');
+	     if (!drawing) drawCanvas();
+	     clearInterval(loadInterval);
+	  }
+	}, 200);
+}
+
+var w;
+var h;
+var ctx;
+var halfw;
+var halfh;
+
+var drawing = false;
+
+var loading_image_done = false;
+var img = new Image();
+img.onload = function() {
+	loading_image_done = true;
+};
+img.src = 'image.png';
+var imgw = 843;
+var imgh = 629;
+
+var loading_dots_done = false;
+var dots = new Image();
+dots.onload = function() {
+	loading_dots_done = true;
+};
+dots.src = 'dots_transparency.png';
+
+var colors=["rgba(117,55,151,1.0)","rgba(93,205,212,1.0)","rgba(175,43,166,1.0)","rgba(255,255,255,1.0)"];
+
+
+function drawCanvas() {
+
+	resize();
+	loadLine('','');
+
+	drawing = true;
+
+	var num = 100;
+	
+	ctx.fillStyle = "rgba(0,0,0,1.0)";
+	ctx.fillRect(0,0,w,h);
+	
+	function drawThis() {
+		
+		var d2 = new Date();
+		var n2 = d2.getTime(); 
+		
+		var sin1 = Math.sin((n2-n)/200)+1.0;
+		var cos1 = Math.cos((n2-n)/800)+1.0;
+		var cos2 = Math.cos((n2-n)/2800);
+		var cos3 = Math.cos((n2-n)/1800);
+		var cos4 = Math.cos((n2-n)/380);
+
+
+		//if (loading_image_done) {
+			var dw = halfw*.5 + sin1*10;
+			var dh = dw*imgh/imgw + cos2*20;
+			var px = halfw-dw*.5 + cos4*80+sin1*20;
+			var py = halfh-dh + cos2*30+cos4*40;
+		//}
+		
+		//var gray = parseInt(155*cos2+100,10);
+		ctx.fillStyle = colors[0];
+		ctx.fillRect(0,0,w,h);
+		//if (rms > 0.45) ctx.fillStyle = "rgba(0,0,0,0.1)";
+		//ctx.fillRect(0,0,w,h);
+		
+		ctx.lineWidth = 3;
+		ctx.save();
+		ctx.translate(px+dw*.5,py+dh*.5);
+		ctx.rotate((n2-n)*0.0001);
+		for(var i=0; i<num; i++) {
+			ctx.rotate(i+cos2/20);
+			ctx.strokeStyle = colors[i%3+1];
+			var sizex = dw;// - i*(4+cos2*20+i*2);
+			var sizey = dh;// - i*(4+cos2*100);
+			//ctx.save();
+			ctx.beginPath();
+			ctx.moveTo(w*.45-sizex, h*.45-sizey);
+			ctx.lineTo(w*.45-sizex, h*.45+sizey);
+			ctx.lineTo(w*.45+sizex, h*.45+sizey);
+			ctx.lineTo(w*.45+sizex, h*.45-sizey);
+			ctx.closePath();
+			ctx.stroke();
+		}
+		ctx.restore();
+
+		if (loading_image_done) {
+			if (loading_dots_done) ctx.drawImage(dots, 0,0,800*.5,600*.5,px+20, py+20, dw, dh);
+			ctx.drawImage(img, px, py, dw, dh);
+		}
+	}
+	
+	requestAnimationFrame( animate );
+	
+	var d = new Date();
+	var n = d.getTime();
+	var repeater = n;
+	var rperiod = 6000;
+	var index = 0;
+
+	function animate() {
+		requestAnimationFrame( animate );
+		drawThis();
+		
+		var dom = document.getElementById('message');
+		if (dom) {
+			var d2 = new Date();
+			var n2 = d2.getTime(); 
+			if (((n2-n) > 6000) && (n2-repeater) > rperiod) {
+				repeater = n2;
+				loadLine('letters',words[index++]);
+				if (index >= words.length) index = 0;
+			}
+		}
+	}
+}
+
+window.onresize = resize;
+
+function resize() {
+	w = window.innerWidth;
+	h = window.innerHeight;
+	
+	var canvas = document.getElementById("canvas");
+	canvas.setAttribute("width", w);
+	canvas.setAttribute("height", h);
+	
+	ctx = canvas.getContext("2d");
+	//ctx.globalCompositeOperation = 'color';
+	ctx.width = w;
+	ctx.height = h;
+	halfw = w*.5;
+	halfh = h*.5;
+
+}
+
+var restartAnim;
+
+function loadLine(thisclass, thistext) {
+	var content = '';
+	var wrapper = thistext.replace(/\S/g, "<span class='letter'>$&</span>").replace(/\n/g,"<br />");
+	content += '<span class="'+thisclass+'">'+wrapper+'</span><br />';	
+	document.getElementById('message').innerHTML = content;
+
+	restartAnim = null;
+	restartAnim = anime.timeline({loop: false})
+	  .add({
+		targets: '.letter',
+		scale: [0, 1],
+		duration: 1500,
+		elasticity: 600,
+		delay: (el, i) => 45 * (i+1)
+	  }).add({
+		targets: '#message',
+		duration: 1000,
+		easing: "easeOutExpo",
+		delay: 1000
+	  });
+
+}
+
+var words = [
+"Hello world!",
+"Associação Inércia presents",
+"a new digital arts festival in Porto, Portugal",
+"11 July 2026 @ A Beneficiência Familiar",
+"an event to showcase\nmusic, graphics and programming",
+"run with our demoscene spirit",
+"and no f*****g AI!",
+"human pixels, human music, human programming",
+"single day event\nseminars, showcases and performances",
+"free entrance, drop by on Impulse!",
+"more info\nhttps://impulse.inercia.pt"
+];
+
+
+// credits: code: ps
+// music: garlick + evil
+// logo graphics: garlick
+// mod player: firehawk/TDA
+
+  </script>
+ </head>
+ <body onload="init()">
+ 	<div class="aligncenter">
+   		<canvas id="canvas" width="800" height="600"></canvas>
+   		<div id="message">titanics cruncher tecrunches while loating...</div>
+		<!--<div id="flyer"><img src="impulse.png"></div>-->
+   	</div>
+ </body>
+</html>
